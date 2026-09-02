@@ -17,6 +17,22 @@ on:
         options:
           - crafted_wild_nepal
           - nepali_satire
+          - travel
+          - cooking
+          - science
+          - education
+          - comedy
+          - tech
+          - finance
+          - sports
+          - entertainment
+          - motivation
+          - fashion
+          - fitness
+          - gaming
+          - politics
+          - true_crime
+          - general
       privacy:
         description: "YouTube visibility"
         required: false
@@ -116,7 +132,15 @@ jobs:
           # enabled — a free-tier key returns 429 on every image model.
           IMAGE_PROVIDER: ${{ vars.IMAGE_PROVIDER || 'pollinations' }}
           GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL || 'gemini-3.6-flash' }}
+          GEMINI_TIMEOUT: ${{ vars.GEMINI_TIMEOUT || '180' }}
+          # Stills per video. Frames stretch to fill the voiceover, so this
+          # tracks the niche word_count (100-200 words ~ 40-80s ~ 10 frames).
+          BROLL_FRAMES: ${{ vars.BROLL_FRAMES || '10' }}
           GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
+          # Only used when IMAGE_PROVIDER=cloudflare; harmless when unset.
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_STEPS: ${{ vars.CLOUDFLARE_STEPS || '8' }}
           YT_PRIVACY: ${{ inputs.privacy || 'unlisted' }}
           NICHE: ${{ inputs.niche || 'crafted_wild_nepal' }}
           TOPIC: ${{ steps.topic.outputs.topic }}

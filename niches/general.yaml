@@ -1,95 +1,108 @@
+# Nepal General — Nepal-focused profile.
+#
+# Loaded by filename:  --niche general
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: general
-display_name: "General"
-description: "Default profile for any topic. Clean, engaging, broadly appealing."
+display_name: "Nepal General"
+description: "Default Nepal-focused profile for topics that don't fit a specific niche."
 
 script:
-  tone: "clear, engaging, conversational, curious"
-  pacing: "moderate, well structured, easy to follow"
-  perspective: "first person, talking to a friend"
-  word_count: "150 to 180"
-  sentence_style: "mix of short and medium sentences"
+  tone: "clear, curious, plain-spoken"
+  pacing: "brisk"
+  perspective: "second person, addressing a Nepali viewer"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short declarative sentences; concrete over abstract"
+
   hooks:
-    - id: breaking_news
-      template: "This just happened and you need to know about it."
-      when: "recent event"
+    - id: did_you_know
+      template: "Most people don't know this about {topic} in Nepal."
+      when: "under-known fact"
     - id: explainer
       template: "Let me explain {topic} in 60 seconds."
       when: "complex topic"
-    - id: question
-      template: "Why is everyone talking about {topic}? Here's the real story."
-      when: "trending topic"
-    - id: statistic_shock
-      template: "{shocking_stat}. That number changes everything."
-      when: "surprising data"
-    - id: story
-      template: "Here's a story you haven't heard yet."
-      when: "narrative driven topic"
+    - id: number
+      template: "One number explains {topic}."
+      when: "data-driven angle"
+
+  structure:
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
   cta_variants:
-    - "Follow for more."
-    - "Subscribe for daily updates."
-    - "What do you think? Comment below."
+    - "Follow for more about Nepal."
+    - "Comment your take."
+    - "What should we cover next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
   forbidden_phrases:
     - "like and subscribe"
     - "smash that bell"
-    - "what's up guys"
-    - "without further ado"
-  structure:
-    opening: "Hook in first 3 seconds. No intro."
-    middle: "3 key facts, each building on the last."
-    closing: "Clear takeaway, then CTA."
+    - "naming living politicians"
+    - "unverified statistics"
+    - "religious, ethnic or caste generalisations"
 
 visuals:
-  style: "cinematic, professional, clean"
-  mood: "engaging, visually interesting"
-  color_palette: ["#1A1A2E", "#16213E", "#0F3460", "#E94560"]
+  style: "documentary photography, warm natural light, Nepali context"
+  prompt_suffix: "photorealistic, natural light, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "cinematic establishing shot"
-      - "dramatic close up with shallow depth of field"
-      - "atmospheric landscape"
+      - "Kathmandu valley streetscapes"
+      - "hill terraces and rural roads"
+      - "everyday people at work"
+      - "Himalayan skyline"
+      - "local markets"
     avoid:
-      - "stock photo cliches"
-      - "clipart"
-  prompt_suffix: "photorealistic, cinematic lighting, high quality, 4K"
+      - "identifiable real public figures"
+      - "party political symbols"
+      - "religious iconography"
+      - "protest imagery"
+      - "on-screen text baked into the visual"
 
 voice:
-  pace: "moderate, approximately 150 words per minute"
-  energy: "warm, engaging, natural"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
       hi: "hi-IN-MadhurNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 50
-        similarity: 80
-        speed: 1.0
-        enhance: true
 
 captions:
-  highlight_color: "#FFFF00"
+  highlight_color: "#26A69A"
   text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
   font_size: 72
   font_weight: "bold"
-  words_per_group: 4
+  position: "lower_third"
+  background: "semi_transparent_dark"
 
 music:
-  mood: "ambient, subtle, no lyrics"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  tags: ["ambient", "cinematic"]
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.25
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
 
 thumbnail:
-  style: "bold text, high contrast, one dominant visual"
-  text_color: "#FFFFFF"
-  accent_color: "#E94560"
+  style: "high contrast, one dominant subject, minimal text"
   max_words: 5
 
 discovery:
   reddit:
-    subreddits: ["worldnews", "todayilearned", "science", "technology"]
+    subreddits: ["Nepal", "NepalSocial", "worldnews"]
   rss:
     feeds:
-      - "https://hnrss.org/frontpage"
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

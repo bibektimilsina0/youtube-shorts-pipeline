@@ -1,77 +1,112 @@
+# Trekking & Travel Nepal — Nepal-focused profile.
+#
+# Loaded by filename:  --niche travel
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: travel
-display_name: "Travel & Adventure"
-description: "For channels covering destinations, travel tips, cultural experiences, and adventure."
+display_name: "Trekking & Travel Nepal"
+description: "Nepal's trails, hidden valleys, heritage towns and the practical realities of travelling there."
+
 script:
-  tone: "aspirational, vivid, storytelling, makes you want to book a flight"
-  pacing: "flowing, descriptive but efficient"
-  perspective: "fellow traveler sharing a discovery"
-  word_count: "140 to 165"
+  tone: "grounded and honest; awe without brochure language"
+  pacing: "brisk"
+  perspective: "second person, as if planning the trip with the viewer"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "concrete details — altitude, hours walked, rupees — never vague praise"
+
   hooks:
-    - id: hidden_gem
-      template: "Nobody talks about this place. And that's exactly why you need to go."
-      when: "lesser known destination"
-    - id: ranked
-      template: "I've been to {number} countries. This is the one I keep going back to."
-      when: "personal recommendation"
-    - id: budget
-      template: "You can visit {destination} for under ${amount} a day. Here's how."
-      when: "budget travel hack"
-    - id: warning
-      template: "Do NOT make this mistake when visiting {destination}."
-      when: "travel tip or cultural awareness"
-  cta_variants:
-    - "Follow for more travel inspo."
-    - "Save this for your next trip."
-    - "Have you been here? Drop your experience."
-  forbidden_phrases:
-    - "wanderlust"
-    - "travel is the only thing you buy that makes you richer"
-    - "living my best life"
+    - id: hidden
+      template: "Everyone treks Annapurna. Almost nobody goes to {topic}."
+      when: "lesser-known destination"
+    - id: hard_truth
+      template: "{topic} is more difficult than the photos suggest. Here's what to expect."
+      when: "challenging trek"
+    - id: altitude
+      template: "At what altitude does {topic} start to hurt? Here's the number."
+      when: "high-altitude route"
+    - id: heritage
+      template: "{topic} survived the earthquake. Barely."
+      when: "heritage site"
+
   structure:
-    opening: "Drop them into the destination immediately. Sensory detail."
-    middle: "Why this place is special, practical info, one insider tip."
-    closing: "The feeling of being there. CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for Nepal trekking guides."
+    - "Comment if you've been."
+    - "Where should we go next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "hidden gem"
+    - "bucket list"
+    - "understating altitude or trail danger"
+    - "invented permit costs"
+
 visuals:
-  style: "golden hour landscapes, cultural details, wide establishing shots"
-  mood: "aspirational, wanderlust, golden, expansive"
-  color_palette: ["#1A3C5E", "#E8A87C", "#D4A574", "#85CDCA", "#FFD700"]
+  style: "documentary landscape photography, high-altitude clarity, natural light"
+  prompt_suffix: "photorealistic, natural light, Himalaya, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "landscape at golden hour"
-      - "local street scene with character"
-      - "aerial view of destination"
-      - "cultural detail close up"
+      - "Himalayan ridgelines at dawn"
+      - "suspension bridges over hill rivers"
+      - "stone-paved trails and teahouses"
+      - "prayer flags and chortens"
+      - "Bhaktapur and Patan courtyards"
+      - "terraced hillside farmland"
     avoid:
-      - "tourist selfie"
-      - "airport/airplane generic"
-      - "hotel room"
-  prompt_suffix: "travel photography, golden hour, cinematic, vibrant colors, National Geographic style"
+      - "identifiable real people's faces"
+      - "staged tourist poses"
+      - "drone-style impossible angles"
+      - "hotel or brand logos"
+
 voice:
-  pace: "flowing, approximately 145 words per minute"
-  energy: "warm, reflective, with moments of excitement"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 55
-        similarity: 85
-        speed: 1.0
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#E8A87C"
-  words_per_group: 4
+  highlight_color: "#3E8FB0"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "world music inspired, ambient, inspiring, no lyrics"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  tags: ["world", "ambient", "inspiring", "cinematic"]
   duck_volume_speech: 0.10
   duck_volume_gap: 0.22
+
 thumbnail:
-  style: "stunning landscape, bold location text, warm tones"
-  accent_color: "#FFD700"
-  max_words: 3
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["travel", "solotravel", "backpacking", "TravelHacks"]
+    subreddits: ["Nepal", "trekking", "hiking"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from .config import VIDEO_WIDTH, VIDEO_HEIGHT, run_cmd
+from .config import VIDEO_WIDTH, VIDEO_HEIGHT, broll_frames, run_cmd
 from .imagegen import active_provider, generate_image
 from .log import log
 
@@ -25,11 +25,12 @@ def generate_broll(prompts: list, out_dir: Path) -> list[Path]:
     outage degrades the video instead of failing the run.
     """
     provider = active_provider()
+    n = broll_frames()
     frames = []
 
-    for i, prompt in enumerate(prompts[:3]):
+    for i, prompt in enumerate(prompts[:n]):
         out_path = out_dir / f"broll_{i}.png"
-        log(f"Generating b-roll frame {i+1}/3 via {provider}...")
+        log(f"Generating b-roll frame {i+1}/{min(n, len(prompts))} via {provider}...")
 
         try:
             generate_image(prompt, out_path, VIDEO_WIDTH, VIDEO_HEIGHT)

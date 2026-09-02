@@ -7,46 +7,113 @@
 # Trending-news discovery is a poor fit for this niche: the content is
 # "here is a sculpture of an animal", which has nothing to do with today's
 # headlines. A curated list gives even coverage of Nepal's wildlife instead.
+#
+# To add topics, just append lines — there is no cap. Reordering is safe;
+# the position file only stores an index, so a big reshuffle may repeat or
+# skip one topic in the current pass and then settle.
+#
+# 90 entries = one full pass per quarter at one video per day.
 
-# ── Endemic / iconic mammals ──────────────────────────────────────
-Red panda in Nepal's eastern hills
+# ── Big cats and canids ───────────────────────────────────────────
 Snow leopard of the high Himalaya
-One-horned rhinoceros of Chitwan
 Bengal tiger in the Terai grasslands
-Himalayan musk deer
 Clouded leopard of Nepal's mid-hills
-Gaur, the Indian bison of Nepal's lowlands
-Himalayan black bear
-Wild water buffalo of Koshi Tappu
-Four-horned antelope of the Terai
-Himalayan tahr on the cliffs
+Common leopard of the Kathmandu valley rim
 Pallas's cat of the Nepali high steppe
+Asiatic golden cat of the eastern hills
+Leopard cat in Nepal's forests
+Jungle cat of the Terai
+Fishing cat of the Koshi wetlands
+Marbled cat of eastern Nepal
+Himalayan wolf of the trans-Himalaya
+Dhole, the Asiatic wild dog
 Golden jackal of the Kathmandu fringe
-Ganges river dolphin in Nepal's rivers
-Indian pangolin, the scaled digger
+Bengal fox of the Terai plains
 
-# ── Birds ─────────────────────────────────────────────────────────
+# ── Other mammals ─────────────────────────────────────────────────
+Red panda in Nepal's eastern hills
+One-horned rhinoceros of Chitwan
+Asian elephant of the Terai corridors
+Gaur, the Indian bison of Nepal's lowlands
+Wild water buffalo of Koshi Tappu
+Himalayan musk deer
+Himalayan black bear
+Sloth bear of the Terai
+Himalayan tahr on the cliffs
+Blue sheep of the Dolpo highlands
+Himalayan serow
+Himalayan goral
+Four-horned antelope of the Terai
+Blackbuck of the Bardiya grasslands
+Nilgai, the blue bull of the plains
+Hog deer of the floodplains
+Swamp deer of Sukla Phanta
+Indian pangolin, the scaled digger
+Chinese pangolin of Nepal's hills
+Ganges river dolphin in Nepal's rivers
+Smooth-coated otter of the Karnali
+Himalayan marmot of the high meadows
+Woolly flying squirrel of the western cliffs
+Assamese macaque of the mid-hills
+Hispid hare of the Terai grasslands
+Large Indian civet
+Yellow-throated marten of the hills
+Binturong of the eastern forests
+
+# ── Pheasants and galliformes ─────────────────────────────────────
 Himalayan monal, Nepal's national bird
+Satyr tragopan, the crimson horned pheasant
+Cheer pheasant of the western hills
+Koklass pheasant of the conifer belt
+Blood pheasant of the eastern Himalaya
+Kalij pheasant in the mid-hill scrub
+Tibetan snowcock above the treeline
+Swamp francolin of the Terai
+
+# ── Raptors and scavengers ────────────────────────────────────────
+Bearded vulture of the high passes
+Himalayan griffon over the ridges
+White-rumped vulture of Nepal
+Red-headed vulture of the Terai
+Egyptian vulture on the hill thermals
+Steppe eagle on migration over Nepal
+Mountain hawk-eagle of the mid-hills
+Pallas's fish eagle of the Koshi
+
+# ── Other birds ───────────────────────────────────────────────────
 Spiny babbler, found only in Nepal
 Sarus crane of the Lumbini wetlands
-Bearded vulture of the high passes
+Black-necked crane of the high valleys
 Great hornbill of the Terai forests
-Cheer pheasant of the western hills
+Rufous-necked hornbill of the east
 Ibisbill of the Himalayan riverbeds
-Satyr tragopan, the crimson horned pheasant
-White-rumped vulture of Nepal
-Danphe in winter plumage
+Bengal florican of the grasslands
+Lesser adjutant stork of the Terai
+Indian skimmer on the Karnali sandbars
+Wood snipe of the Himalayan bogs
+Fire-tailed myzornis of the east
+Fire-tailed sunbird in rhododendron
+Grandala, the blue bird of the high passes
+Snow partridge of the alpine scree
+Nepal wren-babbler
+White-throated bushchat of the Terai
+Great slaty woodpecker of the sal forest
+Rusty-fronted barwing
 
-# ── Reptiles, fish, invertebrates ─────────────────────────────────
+# ── Reptiles and amphibians ───────────────────────────────────────
 Gharial crocodile of the Narayani
-Golden mahseer, the Himalayan river fish
+Mugger crocodile of Nepal's rivers
 King cobra of the Terai
 Himalayan pit viper
-Golden birdwing, Nepal's largest butterfly
+Indian rock python of the lowlands
+Three-striped roofed turtle
+Indian narrow-headed softshell turtle
+Himalayan newt of eastern Nepal
+Annandale's high-altitude frog
 
-# ── Mythological creatures, same craft style ──────────────────────
-The Yeti of Himalayan legend
-Naga, the serpent guardian of Nepali myth
-Garuda, the divine bird of Nepali temples
-Kichkandi of Nepali folklore
-The snow lion of Himalayan iconography
+# ── Fish and invertebrates ────────────────────────────────────────
+Golden mahseer, the Himalayan river fish
+Golden birdwing, Nepal's largest butterfly
+Krishna peacock butterfly of the hills
+Himalayan honeybee and its cliff combs
+Apollo butterfly above the treeline

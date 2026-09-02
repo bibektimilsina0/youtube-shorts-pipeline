@@ -176,8 +176,16 @@ def _call_gemini(prompt: str, max_tokens: int) -> str:
             "temperature": 0.7,
         },
     }
+    # 60s is too tight for the 3.x thinking models: a p99 response can take
+    # just over a minute, and a ReadTimeout wastes the whole call. Overridable
+    # so a slow network or a busier model can be given more room.
+    try:
+        timeout = float(os.environ.get("GEMINI_TIMEOUT") or 180)
+    except ValueError:
+        timeout = 180.0
+
     r = requests.post(
-        url, json=body, timeout=60,
+        url, json=body, timeout=timeout,
         headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
     )
     if r.status_code != 200:

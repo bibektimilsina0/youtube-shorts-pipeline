@@ -1,52 +1,111 @@
+# Nepali Style & Textile — Nepal-focused profile.
+#
+# Loaded by filename:  --niche fashion
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: fashion
-display_name: "Fashion"
-description: "Profile for fashion content."
+display_name: "Nepali Style & Textile"
+description: "Dhaka fabric, pashmina, Newari dress, and how Nepali dress is worn and made today."
+
 script:
-  tone: "engaging, clear, conversational"
-  pacing: "moderate"
-  word_count: "150 to 175"
+  tone: "respectful of craft, curious about change"
+  pacing: "brisk"
+  perspective: "second person, showing the viewer how something is made or worn"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short sentences; name the fabric and the region"
+
   hooks:
-    - id: breaking
-      template: "This just happened in the world of fashion."
-      when: "recent event"
-    - id: explainer
-      template: "Let me break down {topic} in 60 seconds."
-      when: "complex topic"
+    - id: craft
+      template: "{topic} takes a Nepali weaver weeks to make. Here's why."
+      when: "handmade textile"
+    - id: meaning
+      template: "In Nepal, {topic} tells you where someone is from."
+      when: "regional or cultural dress"
+    - id: counterfeit
+      template: "Most 'Nepali pashmina' isn't. Here's how to tell."
+      when: "authenticity, counterfeiting"
+    - id: modern
+      template: "Young Nepalis are wearing {topic} completely differently."
+      when: "contemporary reinterpretation"
+
+  structure:
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
   cta_variants:
-    - "Follow for more."
-    - "What do you think? Comment below."
+    - "Follow for Nepali textile and style."
+    - "Comment where your dhaka is from."
+    - "What should we feature next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
   forbidden_phrases:
     - "like and subscribe"
     - "smash that bell"
-  structure:
-    opening: "Hook in first 3 seconds."
-    middle: "3 key points."
-    closing: "Takeaway and CTA."
+    - "treating cultural dress as costume"
+    - "caste or ethnic generalisations"
+    - "body or appearance commentary"
+    - "fast-fashion promotion"
+
 visuals:
-  style: "cinematic, professional"
-  prompt_suffix: "photorealistic, cinematic lighting, high quality"
+  style: "macro textile photography, warm natural light, Nepali workshop context"
+  prompt_suffix: "photorealistic, macro textile detail, warm natural light, Nepal, high detail, no text, no watermark"
+  subjects:
+    prefer:
+      - "dhaka fabric weave close-up"
+      - "handloom in a Nepali workshop"
+      - "pashmina fibre and spindle"
+      - "Newari jyapu dress detail"
+      - "dyed yarn drying in daylight"
+    avoid:
+      - "identifiable real models' faces"
+      - "brand or designer logos"
+      - "runway or studio-fashion styling"
+      - "Western fast-fashion imagery"
+
 voice:
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 50
-        similarity: 85
-        speed: 1.0
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FFFF00"
-  words_per_group: 4
+  highlight_color: "#AB47BC"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "ambient, subtle"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.25
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "bold text, high contrast"
+  style: "high contrast, one dominant subject, minimal text"
   max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["fashion"]
+    subreddits: ["Nepal", "fashion", "Textiles"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

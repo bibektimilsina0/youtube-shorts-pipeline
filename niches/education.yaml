@@ -1,52 +1,111 @@
+# Learn Nepal — Nepal-focused profile.
+#
+# Loaded by filename:  --niche education
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: education
-display_name: "Education"
-description: "Profile for education content."
+display_name: "Learn Nepal"
+description: "Nepali history, geography, language, civics and how things actually work in Nepal."
+
 script:
-  tone: "engaging, clear, conversational"
-  pacing: "moderate"
-  word_count: "150 to 175"
+  tone: "clear and patient; curiosity over authority"
+  pacing: "brisk"
+  perspective: "second person, teaching a Nepali student or curious adult"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "define the term, then use it; one concept per sentence"
+
   hooks:
-    - id: breaking
-      template: "This just happened in the world of education."
-      when: "recent event"
-    - id: explainer
-      template: "Let me break down {topic} in 60 seconds."
-      when: "complex topic"
+    - id: didnt_know
+      template: "Most Nepalis were never taught this about {topic}."
+      when: "under-taught history or civics"
+    - id: how_it_works
+      template: "How does {topic} actually work in Nepal? Step by step."
+      when: "process or institution"
+    - id: map
+      template: "Nepal's geography explains {topic} better than any textbook."
+      when: "geography-driven topic"
+    - id: word
+      template: "Where does the Nepali word for {topic} come from?"
+      when: "language or etymology"
+
+  structure:
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
   cta_variants:
-    - "Follow for more."
-    - "What do you think? Comment below."
+    - "Follow to learn about Nepal."
+    - "Comment what you were taught in school."
+    - "What should we explain next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
   forbidden_phrases:
     - "like and subscribe"
     - "smash that bell"
-  structure:
-    opening: "Hook in first 3 seconds."
-    middle: "3 key points."
-    closing: "Takeaway and CTA."
+    - "naming living politicians"
+    - "caste-based generalisations"
+    - "religious or ethnic generalisations"
+    - "contested history stated as settled fact"
+
 visuals:
-  style: "cinematic, professional"
-  prompt_suffix: "photorealistic, cinematic lighting, high quality"
+  style: "documentary and archival-feeling photography, warm natural light"
+  prompt_suffix: "photorealistic, natural light, Nepal, documentary style, high detail, no text, no watermark"
+  subjects:
+    prefer:
+      - "old maps of Nepal"
+      - "Nepali classrooms and blackboards"
+      - "Devanagari manuscripts and palm-leaf texts"
+      - "stone inscriptions in Kathmandu valley"
+      - "hill and Terai landscapes as geography context"
+    avoid:
+      - "identifiable real public figures"
+      - "party political symbols"
+      - "religious iconography as decoration"
+      - "on-screen text baked into the visual"
+
 voice:
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 70
-        similarity: 85
-        speed: 1.0
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FFFF00"
-  words_per_group: 4
+  highlight_color: "#7E57C2"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "ambient, subtle"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.25
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "bold text, high contrast"
+  style: "high contrast, one dominant subject, minimal text"
   max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["education"]
+    subreddits: ["Nepal", "AskHistorians", "geography"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

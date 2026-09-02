@@ -1,74 +1,111 @@
+# Science in Nepal — Nepal-focused profile.
+#
+# Loaded by filename:  --niche science
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: science
-display_name: "Science & Discovery"
-description: "For channels covering scientific breakthroughs, space, nature, and research."
+display_name: "Science in Nepal"
+description: "Himalayan geology, glaciers, monsoon, seismology, biodiversity and Nepali research."
+
 script:
-  tone: "curious, awestruck, accessible, makes complex things simple"
-  pacing: "builds from simple to mind blowing"
-  perspective: "enthusiastic guide making science tangible"
-  word_count: "150 to 170"
+  tone: "precise, wonder-driven, careful with uncertainty"
+  pacing: "brisk"
+  perspective: "second person, explaining to an interested non-specialist"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short sentences; give the measurement, then what it means"
+
   hooks:
-    - id: mind_blow
-      template: "Scientists just discovered something that rewrites what we know about {topic}."
-      when: "breakthrough research"
-    - id: scale
-      template: "If {thing} were the size of {comparison}, {mind_blowing_fact}."
-      when: "scale comparison for cosmic or micro topics"
-    - id: question
-      template: "Why does {phenomenon} happen? The answer took scientists {timeframe} to figure out."
-      when: "explained phenomenon"
-  cta_variants:
-    - "Follow for daily science in 60 seconds."
-    - "Subscribe for discoveries that blow your mind."
-    - "Did you know this? Comment below."
-  forbidden_phrases:
-    - "scientists baffled"
-    - "they don't want you to know"
-    - "quantum"
+    - id: under_your_feet
+      template: "The ground under Nepal moves every year. {topic} is why."
+      when: "tectonics, seismology"
+    - id: glacier
+      template: "Nepal's glaciers are doing something measurable. Here's {topic}."
+      when: "glaciology, climate"
+    - id: monsoon
+      template: "Nepal's monsoon controls {topic} more than anything else."
+      when: "hydrology, agriculture"
+    - id: endemic
+      template: "{topic} exists nowhere else on Earth."
+      when: "endemic species, biodiversity"
+
   structure:
-    opening: "Start with the wow. The result, not the method."
-    middle: "Simplify without dumbing down. One analogy per concept."
-    closing: "Why this matters for the future. CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for Himalayan science."
+    - "Comment your question."
+    - "What should we measure next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "earthquake prediction claims"
+    - "unverified statistics"
+    - "overstating scientific certainty"
+    - "climate denial framing"
+
 visuals:
-  style: "cosmic, microscopic, natural wonder, high production value"
-  mood: "awe inspiring, vast, beautiful, wonder"
-  color_palette: ["#0B0B2B", "#1B1464", "#3D5AF1", "#22D1EE", "#FFFFFF"]
+  style: "scientific documentary photography, clean natural light, Himalayan field context"
+  prompt_suffix: "photorealistic, natural light, Himalaya, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "space nebula or galaxy"
-      - "microscope imagery"
-      - "natural phenomenon"
-      - "laboratory with dramatic lighting"
+      - "glacier ice and moraine detail"
+      - "rock strata in Himalayan cliffs"
+      - "monsoon clouds over hill terraces"
+      - "seismograph and field instruments"
+      - "alpine plants above treeline"
     avoid:
-      - "cartoon science illustrations"
-      - "clipart atoms"
-      - "stock photo scientist"
-  prompt_suffix: "scientific visualization, awe inspiring, dramatic scale, NASA quality, cinematic"
+      - "identifiable real researchers"
+      - "sci-fi or futuristic rendering"
+      - "cartoon diagrams"
+      - "on-screen text baked into the visual"
+
 voice:
-  pace: "measured, approximately 150 words per minute"
-  energy: "curious, building excitement"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 65
-        similarity: 85
-        speed: 1.0
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#22D1EE"
-  words_per_group: 4
+  highlight_color: "#29B6F6"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "cosmic ambient, wonder, hans zimmer inspired, no lyrics"
-  energy: "medium, building"
-  tags: ["cosmic", "ambient", "wonder", "cinematic", "space"]
+  mood: "subtle, unobtrusive"
+  energy: "medium"
   duck_volume_speech: 0.10
   duck_volume_gap: 0.22
+
 thumbnail:
-  style: "space/nature visual, bold white text, blue accent"
-  accent_color: "#22D1EE"
-  max_words: 4
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["science", "space", "EverythingScience", "Futurology"]
+    subreddits: ["Nepal", "science", "geology"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

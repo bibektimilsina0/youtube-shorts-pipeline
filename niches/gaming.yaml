@@ -1,137 +1,110 @@
+# Nepali Gaming — Nepal-focused profile.
+#
+# Loaded by filename:  --niche gaming
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: gaming
-display_name: "Gaming News & Culture"
-description: "For channels covering gaming news, esports, game releases, and gaming culture."
+display_name: "Nepali Gaming"
+description: "Nepal's gaming and esports scene — PUBG Mobile, Free Fire, local tournaments and creators."
 
 script:
-  tone: "energetic, opinionated, community insider, knows the references"
-  pacing: "fast and punchy, meme aware, gen z friendly without trying too hard"
-  perspective: "first person, fellow gamer talking to gamers"
-  word_count: "140 to 165"
-  sentence_style: "very short sentences, fragments okay for emphasis, rhetorical questions work"
+  tone: "energetic but informed; treat the local scene as legitimate"
+  pacing: "brisk"
+  perspective: "second person, talking to a Nepali player"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short punchy sentences; use the terms players actually use"
 
   hooks:
-    - id: outrage
-      template: "{company} just did the one thing nobody wanted. And it's worse than you think."
-      when: "negative news, unpopular corporate decision, anti consumer move"
-    - id: hype
-      template: "This changes {game} forever. I'm not exaggerating."
-      when: "major update, surprise announcement, leak confirmed"
-    - id: drama
-      template: "The {game} community is at war right now. Here's what happened."
-      when: "community controversy, pro player drama, dev vs player conflict"
-    - id: comparison
-      template: "{game_a} just killed {game_b}. Here are the numbers."
-      when: "player count shifts, new game launch eating market share"
-    - id: leak
-      template: "This was NOT supposed to get out. But here we are."
-      when: "leaked content, datamined info, insider information"
-    - id: nostalgia
-      template: "Remember when {game} was actually good? That version might be coming back."
-      when: "classic game revival, remaster, spiritual successor"
-    - id: hot_take
-      template: "Unpopular opinion: {take}. And I can prove it."
-      when: "contrarian position that can be backed with evidence"
-
-  cta_variants:
-    - "Follow for daily gaming news."
-    - "Subscribe if you're tired of clickbait gaming channels."
-    - "Drop your take in the comments."
-    - "Part 2 tomorrow. Don't miss it."
-
-  forbidden_phrases:
-    - "what's up gamers"
-    - "before we get into it"
-    - "this video is sponsored by"
-    - "raid shadow legends"
+    - id: local_scene
+      template: "Nepal's {topic} scene is bigger than you think."
+      when: "local esports growth"
+    - id: ban
+      template: "{topic} was banned in Nepal. Here's what actually happened."
+      when: "regulation, ban history"
+    - id: ping
+      template: "Nepali players deal with {topic} that nobody else does."
+      when: "infrastructure, latency"
+    - id: won
+      template: "A Nepali team just beat {topic}."
+      when: "competitive result"
 
   structure:
-    opening: "Hook with emotion or surprise. One sentence that makes them stop scrolling."
-    middle: "Context, then escalation. Each fact should make the story bigger or worse. Use 'but wait, it gets better' or 'and then THIS happened' as transitions."
-    closing: "Strong take. Not neutral. Pick a side. Then CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for Nepali gaming."
+    - "Comment your rank."
+    - "Which tournament should we cover?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "gambling or loot-box promotion"
+    - "cheat or hack promotion"
+    - "abuse of named players"
 
 visuals:
-  style: "vibrant, high contrast, game aesthetic inspired, dark backgrounds with colorful accents"
-  mood: "energetic, dramatic, slightly chaotic"
-  color_palette: ["#0D0D0D", "#1A0033", "#FF4444", "#FFD700", "#00BFFF"]
-
+  style: "documentary photography of Nepali gaming spaces, screen glow, natural context"
+  prompt_suffix: "photorealistic, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "dramatic game screenshot with volumetric lighting"
-      - "controller or keyboard macro shot with RGB lighting"
-      - "esports stage or tournament arena atmosphere"
-      - "game character in cinematic pose"
-      - "split screen comparison of two games"
-      - "player reaction or crowd celebration"
+      - "cyber cafe in Kathmandu"
+      - "mobile gaming on a Nepali rooftop"
+      - "local LAN tournament setup"
+      - "router and fibre box detail"
+      - "crowd watching a match on a projector"
     avoid:
-      - "generic stock gamer at desk"
-      - "cartoon/chibi game characters"
-      - "mobile gaming imagery"
-      - "overly corporate esports branding"
-
-  prompt_suffix: "gaming aesthetic, dramatic lighting, high contrast, cinematic, vibrant colors, 4K quality"
+      - "identifiable real streamers"
+      - "game or sponsor logos"
+      - "copyrighted game screenshots"
+      - "gambling imagery"
 
 voice:
-  pace: "fast, approximately 170 words per minute, slightly breathless energy"
-  energy: "high energy, excited but genuine, not forced hype"
-  style: "think TheScore Esports narrator meets Dunkey's pacing"
-
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-ChristopherNeural"
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
       hi: "hi-IN-MadhurNeural"
-    elevenlabs:
-      voice_id: "JBFqnCBsd6RMkjVDRZzb"
-      settings:
-        stability: 0.35
-        similarity_boost: 0.80
-        style: 0.45
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 35
-        similarity: 80
-        speed: 1.05
-        enhance: true
 
 captions:
-  highlight_color: "#FFD700"
+  highlight_color: "#7C4DFF"
   text_color: "#FFFFFF"
-  font_family: "Arial"
-  font_size: 76
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
   font_weight: "bold"
   position: "lower_third"
   background: "semi_transparent_dark"
-  words_per_group: 3
 
 music:
-  mood: "electronic, upbeat, slightly aggressive, no lyrics, gaming montage energy"
-  energy: "high"
-  tags: ["electronic", "gaming", "montage", "hype", "bass"]
+  mood: "subtle, unobtrusive"
+  energy: "medium"
   duck_volume_speech: 0.10
-  duck_volume_gap: 0.25
+  duck_volume_gap: 0.22
 
 thumbnail:
-  style: "dark background, bold colored text, game artwork or character focus, high energy composition"
-  text_color: "#FFFFFF"
-  accent_color: "#FF4444"
-  text_position: "center_or_left"
-  max_words: 4
-  font_style: "bold impact style, slightly tilted acceptable"
-  guidelines:
-    - "4 words max, all caps for emphasis"
-    - "Red and yellow outperform other colors in gaming thumbnails"
-    - "Show a face (reaction) or a game character, never generic imagery"
-    - "Arrows and circles are cliche but still work in gaming niche"
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
 
 discovery:
   reddit:
-    subreddits: ["gaming", "Games", "pcgaming", "VALORANT", "leagueoflegends", "apexlegends", "FortNiteBR", "esports"]
+    subreddits: ["Nepal", "gaming", "PUBGMobile"]
   rss:
     feeds:
-      - "https://kotaku.com/rss"
-      - "https://www.polygon.com/rss/index.xml"
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
   google_trends:
-    category: "games"
-    geo: ""
-  youtube_trending:
-    category_id: "20"
+    geo: "NP"

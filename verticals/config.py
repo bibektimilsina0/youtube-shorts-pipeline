@@ -23,6 +23,30 @@ VIDEO_WIDTH = 1080
 VIDEO_HEIGHT = 1920
 
 # ─────────────────────────────────────────────────────
+# B-roll frame count
+# ─────────────────────────────────────────────────────
+BROLL_FRAMES_DEFAULT = 3
+BROLL_FRAMES_MAX = 30
+
+
+def broll_frames() -> int:
+    """How many b-roll stills to generate per video.
+
+    Frames are stretched to fill the voiceover, so this needs to scale with
+    the niche's word_count: ~4-6s per frame reads as normal pacing, and a
+    100-200 word script (40-80s) wants roughly 10.
+    """
+    raw = os.environ.get("BROLL_FRAMES")
+    if not raw:
+        return BROLL_FRAMES_DEFAULT
+    try:
+        n = int(raw)
+    except ValueError:
+        return BROLL_FRAMES_DEFAULT
+    return max(1, min(n, BROLL_FRAMES_MAX))
+
+
+# ─────────────────────────────────────────────────────
 # Voice config — override via env or config.json
 # ─────────────────────────────────────────────────────
 VOICE_ID_EN = os.environ.get("VOICE_ID_EN", "JBFqnCBsd6RMkjVDRZzb")  # George

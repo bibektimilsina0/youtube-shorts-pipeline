@@ -1,74 +1,115 @@
+# Nepal Case Files — Nepal-focused profile.
+#
+# Loaded by filename:  --niche true_crime
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: true_crime
-display_name: "True Crime & Mystery"
-description: "For channels covering cold cases, criminal investigations, and mysteries."
+display_name: "Nepal Case Files"
+description: "Resolved, publicly documented Nepali criminal and legal cases, told carefully."
+
 script:
-  tone: "suspenseful, measured, respectful of victims, gripping storytelling"
-  pacing: "slow build, deliberate pauses, tension escalation"
-  perspective: "narrator guiding the audience through evidence"
-  word_count: "155 to 175"
+  tone: "restrained and factual; no sensationalism, no dramatised reconstruction"
+  pacing: "brisk"
+  perspective: "third person, reporting rather than narrating"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short factual sentences; attribute every claim"
+
   hooks:
-    - id: mystery
-      template: "In {year}, {person} vanished without a trace. {timeframe} later, a discovery changed everything."
-      when: "disappearance or cold case"
-    - id: twist
-      template: "This case was closed for {timeframe}. Then someone found something that shouldn't exist."
-      when: "case reopened with new evidence"
-    - id: question
-      template: "What happened to {person}? The answer is darker than anyone imagined."
-      when: "unsolved or recently solved case"
-  cta_variants:
-    - "Follow for more true crime breakdowns."
-    - "Part 2 drops tomorrow."
-    - "What's your theory? Comment below."
-  forbidden_phrases:
-    - "you won't believe"
-    - "graphic content warning"
-    - "alleged"
+    - id: court_record
+      template: "Nepal's courts documented {topic}. Most people never read it."
+      when: "publicly documented case"
+    - id: unresolved_question
+      template: "{topic} was closed, but one question stayed open."
+      when: "case with a lingering ambiguity"
+    - id: law_changed
+      template: "{topic} changed Nepali law."
+      when: "case with legislative consequence"
+    - id: timeline
+      template: "Here is what the record says about {topic}, in order."
+      when: "chronological account"
+
   structure:
-    opening: "Set the scene. Time, place, person. Create immediate tension."
-    middle: "Layer evidence. Each fact should deepen the mystery or shift suspicion."
-    closing: "The unresolved question or the shocking resolution. CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for documented Nepali cases."
+    - "Comment if you remember this."
+    - "Which case should we document next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "naming living suspects or the accused"
+    - "naming victims"
+    - "allegations against named living people"
+    - "speculation presented as fact"
+    - "graphic violence description"
+    - "reconstructing crimes visually"
+    - "ongoing or sub-judice cases"
+
 visuals:
-  style: "dark, desaturated, noir aesthetic, evidence board feel"
-  mood: "ominous, tense, mysterious, documentary"
-  color_palette: ["#0A0A0A", "#1A1A2E", "#8B0000", "#4A4A4A", "#C0C0C0"]
+  style: "muted documentary photography, overcast daylight, no people"
+  prompt_suffix: "photorealistic, muted natural light, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "dark empty corridor"
-      - "evidence document close up"
-      - "foggy landscape at night"
-      - "old photograph with grain"
+      - "Nepali courthouse exterior"
+      - "archival case files and stamped paper"
+      - "empty Kathmandu street at dawn"
+      - "police station signage without identifying detail"
+      - "legal code books"
     avoid:
-      - "graphic violence"
-      - "real crime scene photos"
-      - "victim photos"
-  prompt_suffix: "noir photography, dark moody, desaturated, atmospheric fog, documentary feel"
+      - "any depiction of violence"
+      - "identifiable real people"
+      - "crime-scene imagery"
+      - "weapons"
+      - "dramatised reenactment styling"
+
 voice:
-  pace: "deliberate, approximately 135 words per minute"
-  energy: "low, intense, controlled tension"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-DavisNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 75
-        similarity: 85
-        speed: 0.9
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#8B0000"
+  highlight_color: "#78909C"
+  text_color: "#FFFFFF"
   words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "dark ambient, tension, suspense, no lyrics, horror documentary"
-  energy: "low"
-  tags: ["dark", "ambient", "suspense", "tension", "noir"]
-  duck_volume_speech: 0.08
-  duck_volume_gap: 0.18
+  mood: "subtle, unobtrusive"
+  energy: "medium"
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "dark, red accent text, shadowy figure or evidence detail"
-  accent_color: "#8B0000"
-  max_words: 4
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["TrueCrime", "UnresolvedMysteries", "serialpodcast"]
+    subreddits: ["Nepal", "TrueCrimeDiscussion"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

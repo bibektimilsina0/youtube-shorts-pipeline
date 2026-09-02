@@ -1,17 +1,23 @@
 """Image generation provider switch.
 
-Two providers, selected with IMAGE_PROVIDER:
+Three providers, selected with IMAGE_PROVIDER:
 
-  pollinations  Free, keyless HTTP endpoint (Flux). No signup, no quota.
-                Ignores the requested width/height and returns 576x1024;
-                callers rescale, so only sharpness suffers.
-  gemini        Google AI Studio. Better quality and prompt adherence, but
-                image generation is NOT on the free tier — a free-tier key
-                returns 429 RESOURCE_EXHAUSTED on every image model.
+  cloudflare    Workers AI FLUX.1-schnell. Free account, no card required,
+                10,000 neurons/day — about 100 images at 8 steps, versus the
+                4 this pipeline needs per video. Best free quality, but the
+                model has no width/height parameters: it returns a square
+                image that callers crop to 9:16.
+  pollinations  Free, keyless. No signup at all. Serves one model (sana) and
+                caps output at roughly 590k pixels (576x1024 for a 9:16
+                request), so frames are softer after upscaling.
+  gemini        Google AI Studio. Best prompt adherence, but image generation
+                is NOT on the free tier — a free-tier key returns 429
+                RESOURCE_EXHAUSTED on every image model.
 
-Default is pollinations: it works with no billing set up. Neither provider is
-guaranteed, so callers keep their own fallback (a solid-colour frame for
-b-roll) for when generation fails.
+Default is pollinations because it needs no credentials. Set
+IMAGE_PROVIDER=cloudflare once CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN
+are configured. No provider is guaranteed, so callers keep their own fallback
+(a solid-colour frame for b-roll) for when generation fails.
 """
 
 import base64
@@ -28,6 +34,10 @@ from .retry import with_retry
 DEFAULT_PROVIDER = "pollinations"
 
 POLLINATIONS_URL = "https://image.pollinations.ai/prompt/"
+CLOUDFLARE_URL = (
+    "https://api.cloudflare.com/client/v4/accounts/{account}/ai/run/{model}"
+)
+CLOUDFLARE_MODEL = "@cf/black-forest-labs/flux-1-schnell"
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
@@ -42,9 +52,17 @@ def _generate_pollinations(prompt: str, output_path: Path, width: int, height: i
     # Prompt goes in the path, so it must be fully percent-encoded — an
     # unescaped "/" or "?" would otherwise truncate or corrupt the request.
     url = POLLINATIONS_URL + urllib.parse.quote(prompt, safe="")
+    # The service scales any request down to ~590k pixels while keeping the
+    # aspect ratio, so asking for 1080x1920 just wastes the budget on an
+    # upscale later. Ask for the largest size it will actually return.
+    budget = 590000
+    ratio = height / width if width else 16 / 9
+    req_w = int((budget / ratio) ** 0.5)
+    req_h = int(req_w * ratio)
+
     params = {
-        "width": width,
-        "height": height,
+        "width": req_w,
+        "height": req_h,
         "nologo": "true",
         # Vary the seed so three prompts in one run never collide on a cached
         # image; the service keys its cache on prompt+seed.
@@ -111,6 +129,91 @@ def _generate_gemini(prompt: str, output_path: Path, instruction: str):
     raise RuntimeError("No image in Gemini response")
 
 
+def _generate_cloudflare(prompt: str, output_path: Path):
+    """Generate an image via Cloudflare Workers AI (FLUX.1-schnell).
+
+    The model takes no width/height: it returns a square image, which the
+    caller crops to 9:16. `steps` is capped at 8 by the API.
+    """
+    # Checked before the retrying call: missing credentials are a config
+    # error, and retrying them just burns 14 seconds to fail identically.
+    account = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+    token = os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
+    if not account or not token:
+        raise RuntimeError(
+            "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN must both be set "
+            "for IMAGE_PROVIDER=cloudflare (dash.cloudflare.com -> Workers & "
+            "Pages -> Workers AI)"
+        )
+    _cloudflare_request(prompt, output_path, account, token)
+
+
+@with_retry(max_retries=3, base_delay=2.0)
+def _cloudflare_request(prompt: str, output_path: Path, account: str, token: str):
+    """POST to Workers AI and write the returned image. Retried on failure."""
+    # flux-1-schnell has no width/height parameters and returns a square, of
+    # which the 9:16 crop keeps only the middle ~56% of the width. Asking for
+    # a centred vertical composition keeps the subject inside that column.
+    if os.environ.get("CLOUDFLARE_VERTICAL_HINT", "1") != "0":
+        prompt = (
+            f"{prompt}, vertical portrait composition, subject centered "
+            "with empty space above and below"
+        )
+
+    model = os.environ.get("CLOUDFLARE_IMAGE_MODEL") or CLOUDFLARE_MODEL
+    try:
+        steps = int(os.environ.get("CLOUDFLARE_STEPS") or 8)
+    except ValueError:
+        steps = 8
+    steps = max(1, min(steps, 8))  # API rejects steps > 8
+
+    r = requests.post(
+        CLOUDFLARE_URL.format(account=account, model=model),
+        # Only prompt and steps are accepted. Cloudflare's docs also list a
+        # `seed` parameter, but the live endpoint rejects it (and width/height)
+        # with "Additional or unevaluated properties not allowed", so output is
+        # not reproducible and the size is fixed.
+        json={
+            "prompt": prompt[:2048],  # documented max prompt length
+            "steps": steps,
+        },
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        },
+        timeout=180,
+    )
+    if r.status_code != 200:
+        detail = r.text[:200]
+        try:
+            errs = r.json().get("errors") or []
+            if errs:
+                detail = "; ".join(str(e.get("message", e)) for e in errs)[:200]
+        except Exception:
+            pass
+        hint = ""
+        if r.status_code in (401, 403):
+            hint = " — check CLOUDFLARE_API_TOKEN has the Workers AI:Read permission"
+        elif r.status_code == 429:
+            hint = (
+                " — daily free neuron allowance exhausted; retry tomorrow or "
+                "set IMAGE_PROVIDER=pollinations"
+            )
+        raise RuntimeError(f"Cloudflare AI {r.status_code}: {detail}{hint}")
+
+    data = r.json()
+    if not data.get("success", True):
+        raise RuntimeError(f"Cloudflare AI returned success=false: {str(data)[:200]}")
+
+    # flux-1-schnell answers {"result": {"image": "<base64>"}}; some Workers AI
+    # image models stream raw bytes instead, so handle both.
+    result = data.get("result") or {}
+    b64 = result.get("image")
+    if not b64:
+        raise RuntimeError(f"No image in Cloudflare response: {str(data)[:200]}")
+    output_path.write_bytes(base64.b64decode(b64))
+
+
 def generate_image(
     prompt: str,
     output_path: Path,
@@ -123,11 +226,14 @@ def generate_image(
     Raises on failure — callers decide whether to fall back.
     """
     provider = active_provider()
-    if provider == "pollinations":
+    if provider == "cloudflare":
+        _generate_cloudflare(prompt, output_path)
+    elif provider == "pollinations":
         _generate_pollinations(prompt, output_path, width, height)
     elif provider == "gemini":
         _generate_gemini(prompt, output_path, instruction)
     else:
         raise RuntimeError(
-            f"Unknown IMAGE_PROVIDER '{provider}' — expected 'pollinations' or 'gemini'"
+            f"Unknown IMAGE_PROVIDER '{provider}' — expected "
+            "'cloudflare', 'pollinations' or 'gemini'"
         )

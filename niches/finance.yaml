@@ -1,85 +1,111 @@
+# Nepali Money & Markets — Nepal-focused profile.
+#
+# Loaded by filename:  --niche finance
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: finance
-display_name: "Finance & Markets"
-description: "For channels covering investing, markets, personal finance, and economics."
+display_name: "Nepali Money & Markets"
+description: "NEPSE, remittance, banking, inflation and household money in Nepal."
+
 script:
-  tone: "clear, data driven, authoritative but accessible, never preachy"
-  pacing: "measured, let numbers breathe, build to conclusion"
-  perspective: "first person, informed observer sharing analysis"
-  word_count: "140 to 165"
+  tone: "calm, sceptical of hype, practical about household money"
+  pacing: "brisk"
+  perspective: "second person, addressing a Nepali saver or small investor"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "one idea per sentence; always give the rupee figure"
+
   hooks:
-    - id: statistic_shock
-      template: "{shocking_stat}. And most people have no idea what this means for their money."
-      when: "surprising market data or economic indicator"
-    - id: contrarian_take
-      template: "Wall Street is betting big on {topic}. Here's why they might be wrong."
-      when: "consensus trade or popular narrative"
-    - id: breaking_news
-      template: "The Fed just did something they haven't done in {timeframe}."
-      when: "central bank action, policy change"
-    - id: prediction
-      template: "{topic} is about to change how you think about money."
-      when: "structural shift in markets or fintech"
-    - id: explainer
-      template: "Everyone is confused about {topic}. Here's what's actually happening."
-      when: "complex financial event with widespread misunderstanding"
-  cta_variants:
-    - "Follow for daily market breakdowns."
-    - "Subscribe for finance news that skips the jargon."
-    - "What's your take? Drop it in the comments."
-  forbidden_phrases:
-    - "financial advice"
-    - "guaranteed returns"
-    - "get rich quick"
-    - "not financial advice but"
-    - "to the moon"
+    - id: nepse_move
+      template: "NEPSE did something today that should worry you."
+      when: "market movement"
+    - id: remittance
+      template: "A third of Nepal's economy walks in through remittance. {topic} threatens that."
+      when: "remittance, foreign employment"
+    - id: household
+      template: "What does {topic} actually cost your household? Here's the rupee number."
+      when: "inflation, fuel, food price"
+    - id: myth
+      template: "Most Nepalis believe this about {topic}. It's wrong."
+      when: "common financial misconception"
+
   structure:
-    opening: "Lead with a number or a surprising fact. No greeting."
-    middle: "Context, cause, effect. Always ground claims in data from research."
-    closing: "What this means for the average person. Then CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for Nepali market breakdowns."
+    - "Comment your take on NEPSE."
+    - "Share this with someone who invests."
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "buy or sell recommendations"
+    - "guaranteed return claims"
+    - "specific stock tips"
+    - "unverified NEPSE figures"
+
 visuals:
-  style: "dark backgrounds, green/red accents, clean data aesthetic"
-  mood: "serious, professional, trustworthy"
-  color_palette: ["#0D1117", "#1A1A2E", "#00C853", "#FF1744", "#FFD600"]
+  style: "documentary photography of Nepali commerce, warm daylight"
+  prompt_suffix: "photorealistic, natural light, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "stock chart on dark screen"
-      - "trading floor atmosphere"
-      - "currency and gold close up"
-      - "city skyline financial district"
+      - "Kathmandu vegetable market with price boards"
+      - "bank queues in Nepal"
+      - "Nepali rupee notes and coins close-up"
+      - "NEPSE trading floor atmosphere"
+      - "remittance counter at a Nepali bank"
     avoid:
-      - "cartoon money illustrations"
-      - "person throwing money in air"
-      - "generic piggy bank"
-  prompt_suffix: "photorealistic, financial aesthetic, dark moody lighting, professional"
+      - "Wall Street imagery"
+      - "US dollar bills"
+      - "identifiable real bankers or officials"
+      - "party political symbols"
+
 voice:
-  pace: "moderate, approximately 145 words per minute"
-  energy: "calm authority, measured confidence"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 70
-        similarity: 90
-        speed: 0.95
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#00C853"
-  words_per_group: 4
+  highlight_color: "#F5C542"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "ambient, subtle tension, no lyrics, corporate documentary feel"
-  energy: "low to medium"
-  tags: ["ambient", "corporate", "documentary"]
+  mood: "subtle, unobtrusive"
+  energy: "medium"
   duck_volume_speech: 0.10
-  duck_volume_gap: 0.20
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "dark background, bold numbers or percentages, red/green accent"
-  accent_color: "#00C853"
-  max_words: 4
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["personalfinance", "investing", "stocks", "economics", "wallstreetbets"]
+    subreddits: ["Nepal", "NepalStock", "NepaliFinance"]
   rss:
     feeds:
-      - "https://feeds.bloomberg.com/markets/news.rss"
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

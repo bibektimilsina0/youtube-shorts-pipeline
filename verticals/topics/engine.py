@@ -71,30 +71,46 @@ class TopicEngine:
             # Apply niche defaults when no explicit config is set by user.
             # Precedence: user config.json > niche YAML discovery > the
             # hardcoded NICHE_TO_SUBREDDITS table.
-            if self._niche != "general":
-                if name == "reddit" and "subreddits" not in src_cfg:
-                    # YAML accepts either `reddit: [subs]` or
-                    # `reddit: {subreddits: [subs]}`.
-                    yaml_reddit = niche_discovery.get("reddit")
-                    if isinstance(yaml_reddit, dict):
-                        yaml_subs = yaml_reddit.get("subreddits", [])
-                    elif isinstance(yaml_reddit, list):
-                        yaml_subs = yaml_reddit
-                    else:
-                        yaml_subs = []
-                    niche_subs = yaml_subs or NICHE_TO_SUBREDDITS.get(self._niche, [])
-                    if niche_subs:
-                        src_cfg["subreddits"] = niche_subs
-                if name == "rss" and "feeds" not in src_cfg:
-                    yaml_feeds = niche_discovery.get("rss")
-                    if isinstance(yaml_feeds, list) and yaml_feeds:
-                        src_cfg["feeds"] = yaml_feeds
-                if name == "google_trends" and "geo" not in src_cfg:
-                    yaml_geo = niche_discovery.get("google_trends_geo")
-                    if yaml_geo:
-                        src_cfg["geo"] = yaml_geo
-                if name == "newsapi":
-                    src_cfg.setdefault("niche", self._niche)
+            #
+            # "general" is not excluded: a general.yaml with its own discovery
+            # block is a deliberate profile like any other, and skipping it
+            # left that niche silently pointing at the upstream defaults.
+            if name == "reddit" and "subreddits" not in src_cfg:
+                # YAML accepts either `reddit: [subs]` or
+                # `reddit: {subreddits: [subs]}`.
+                yaml_reddit = niche_discovery.get("reddit")
+                if isinstance(yaml_reddit, dict):
+                    yaml_subs = yaml_reddit.get("subreddits", [])
+                elif isinstance(yaml_reddit, list):
+                    yaml_subs = yaml_reddit
+                else:
+                    yaml_subs = []
+                niche_subs = yaml_subs or NICHE_TO_SUBREDDITS.get(self._niche, [])
+                if niche_subs:
+                    src_cfg["subreddits"] = niche_subs
+            if name == "rss" and "feeds" not in src_cfg:
+                # YAML accepts either `rss: [urls]` or `rss: {feeds: [urls]}`
+                # — the shipped profiles use the nested form.
+                yaml_rss = niche_discovery.get("rss")
+                if isinstance(yaml_rss, dict):
+                    yaml_feeds = yaml_rss.get("feeds", [])
+                elif isinstance(yaml_rss, list):
+                    yaml_feeds = yaml_rss
+                else:
+                    yaml_feeds = []
+                if yaml_feeds:
+                    src_cfg["feeds"] = yaml_feeds
+            if name == "google_trends" and "geo" not in src_cfg:
+                # Flat `google_trends_geo: NP` or nested
+                # `google_trends: {geo: NP}`.
+                yaml_gt = niche_discovery.get("google_trends")
+                yaml_geo = niche_discovery.get("google_trends_geo")
+                if not yaml_geo and isinstance(yaml_gt, dict):
+                    yaml_geo = yaml_gt.get("geo")
+                if yaml_geo:
+                    src_cfg["geo"] = yaml_geo
+            if name == "newsapi":
+                src_cfg.setdefault("niche", self._niche)
 
             # NewsAPI enabled if key is present (checked by is_available); others default on/off
             default_enabled = name in ("reddit", "rss", "google_trends", "newsapi")

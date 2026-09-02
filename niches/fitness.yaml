@@ -1,78 +1,111 @@
+# Fitness in Nepal — Nepal-focused profile.
+#
+# Loaded by filename:  --niche fitness
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: fitness
-display_name: "Fitness & Health"
-description: "For channels covering workouts, nutrition, health tips, and body transformation."
+display_name: "Fitness in Nepal"
+description: "Training, altitude, trail running and everyday movement for a Nepali audience."
+
 script:
-  tone: "motivational but grounded, actionable, no bro science"
-  pacing: "energetic, direct, every sentence earns its place"
-  perspective: "coach talking to client"
-  word_count: "140 to 160"
+  tone: "direct, no-nonsense, anti-hype"
+  pacing: "brisk"
+  perspective: "second person, coaching the viewer"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "imperative sentences; state the number of sets, minutes, metres"
+
   hooks:
-    - id: myth_bust
-      template: "You've been doing {exercise} wrong your entire life. Here's the fix."
-      when: "common exercise mistake or nutrition myth"
-    - id: challenge
-      template: "Try this for 30 days. Your body will thank you."
-      when: "simple actionable routine"
-    - id: statistic_shock
-      template: "{shocking_stat}. And it all comes down to one thing."
-      when: "surprising health or fitness data"
-    - id: comparison
-      template: "{exercise_a} vs {exercise_b}. One builds muscle. The other wastes your time."
-      when: "exercise comparison"
-  cta_variants:
-    - "Follow for daily fitness tips."
-    - "Save this for your next workout."
-    - "Try it and comment your results."
-  forbidden_phrases:
-    - "no pain no gain"
-    - "shredded in 30 days"
-    - "doctors hate this"
-    - "one weird trick"
+    - id: altitude
+      template: "Training at Kathmandu's altitude changes {topic}. Here's how."
+      when: "altitude-affected training"
+    - id: no_gym
+      template: "You don't need a gym for {topic}. Nepali hills are the gym."
+      when: "bodyweight or outdoor training"
+    - id: myth
+      template: "Nepali fitness culture gets {topic} wrong."
+      when: "common misconception"
+    - id: porter
+      template: "Nepali porters do {topic} daily. Here's what that teaches you."
+      when: "endurance, load carrying"
+
   structure:
-    opening: "Hook with a common mistake or surprising fact. Immediately useful."
-    middle: "The what, the why, and the how. Keep it actionable."
-    closing: "Recap the key action. CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for training that fits Nepal."
+    - "Comment your current routine."
+    - "Try this for a week and report back."
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "medical or injury-treatment advice"
+    - "supplement recommendations"
+    - "extreme calorie restriction"
+    - "body shaming"
+
 visuals:
-  style: "high energy, gym lighting, movement focused, warm tones"
-  mood: "motivational, powerful, aspirational"
-  color_palette: ["#1A1A1A", "#FF6B35", "#F7C948", "#FFFFFF"]
+  style: "documentary photography, Nepali outdoor training, natural light"
+  prompt_suffix: "photorealistic, natural light, Nepal, documentary style, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "athlete in motion with dramatic lighting"
-      - "gym equipment close up"
-      - "healthy food preparation"
-      - "before and after transformation"
+      - "stone stairs in Kathmandu hills"
+      - "trail running on hill paths"
+      - "outdoor pull-up bars in a Nepali park"
+      - "porters carrying loads on a trail"
+      - "Shivapuri and Nagarkot ridges"
     avoid:
-      - "steroid physiques"
-      - "supplement bottles"
-      - "generic stock fitness"
-  prompt_suffix: "dynamic, motivational, warm lighting, high energy, fitness photography"
+      - "identifiable real people's faces"
+      - "gym brand logos"
+      - "supplement products"
+      - "idealised bodybuilder physiques"
+
 voice:
-  pace: "energetic, approximately 155 words per minute"
-  energy: "high, coaching energy, encouraging"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-ChristopherNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 35
-        similarity: 85
-        speed: 1.05
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FF6B35"
+  highlight_color: "#4CAF50"
+  text_color: "#FFFFFF"
   words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "upbeat electronic, motivational, gym energy, no lyrics"
-  energy: "high"
-  tags: ["workout", "electronic", "motivational", "energy"]
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.28
+  mood: "subtle, unobtrusive"
+  energy: "medium"
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "action shot, bold text, warm orange/yellow accents"
-  accent_color: "#FF6B35"
-  max_words: 4
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["fitness", "bodyweightfitness", "nutrition", "running", "loseit"]
+    subreddits: ["Nepal", "bodyweightfitness", "trailrunning"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

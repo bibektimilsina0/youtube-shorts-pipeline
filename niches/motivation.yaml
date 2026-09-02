@@ -1,52 +1,112 @@
+# Nepali Grit — Nepal-focused profile.
+#
+# Loaded by filename:  --niche motivation
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: motivation
-display_name: "Motivation"
-description: "Profile for motivation content."
+display_name: "Nepali Grit"
+description: "Real stories of persistence from Nepal — porters, students, migrant workers, small businesses."
+
 script:
-  tone: "engaging, clear, conversational"
-  pacing: "moderate"
-  word_count: "150 to 175"
+  tone: "sincere and grounded; never saccharine, never guru-like"
+  pacing: "brisk"
+  perspective: "second person, speaking to someone who is tired"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short declaratives; concrete details instead of abstractions"
+
   hooks:
-    - id: breaking
-      template: "This just happened in the world of motivation."
-      when: "recent event"
-    - id: explainer
-      template: "Let me break down {topic} in 60 seconds."
-      when: "complex topic"
+    - id: real_story
+      template: "{topic} happened in Nepal, and almost nobody heard about it."
+      when: "real, verifiable story"
+    - id: hard_number
+      template: "{topic} takes most Nepalis years. Here's the honest timeline."
+      when: "effort over time"
+    - id: porter
+      template: "A Nepali porter carries more than you think. {topic} puts it in perspective."
+      when: "endurance, labour"
+    - id: quiet
+      template: "Nobody claps for {topic}. It still matters."
+      when: "unrecognised effort"
+
+  structure:
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
   cta_variants:
-    - "Follow for more."
-    - "What do you think? Comment below."
+    - "Follow for real Nepali stories."
+    - "Comment what you're working through."
+    - "Send this to someone who needs it."
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
   forbidden_phrases:
     - "like and subscribe"
     - "smash that bell"
-  structure:
-    opening: "Hook in first 3 seconds."
-    middle: "3 key points."
-    closing: "Takeaway and CTA."
+    - "hustle culture platitudes"
+    - "grindset"
+    - "toxic positivity"
+    - "romanticising poverty or hardship"
+    - "invented inspirational stories"
+
 visuals:
-  style: "cinematic, professional"
-  prompt_suffix: "photorealistic, cinematic lighting, high quality"
+  style: "honest documentary photography, warm natural light, Nepali working life"
+  prompt_suffix: "photorealistic, natural light, Nepal, documentary style, high detail, no text, no watermark"
+  subjects:
+    prefer:
+      - "hands worn from work"
+      - "early-morning hill trail with a load"
+      - "student studying by inverter light"
+      - "small shop opening at dawn"
+      - "stone steps worn smooth by use"
+    avoid:
+      - "identifiable real people's faces"
+      - "staged inspirational poses"
+      - "luxury or wealth imagery"
+      - "text overlays baked into the visual"
+
 voice:
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 40
-        similarity: 85
-        speed: 1.05
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FFFF00"
-  words_per_group: 4
+  highlight_color: "#FFA726"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "ambient, subtle"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.25
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "bold text, high contrast"
+  style: "high contrast, one dominant subject, minimal text"
   max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["motivation"]
+    subreddits: ["Nepal", "GetMotivated", "decidingtobebetter"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

@@ -7,7 +7,7 @@ visual vocabulary for b-roll prompts, and thumbnail guidance.
 
 import json
 
-from .config import PLATFORM_CONFIGS
+from .config import PLATFORM_CONFIGS, broll_frames
 from .llm import call_llm
 from .log import log
 from .niche import load_niche, get_script_context, get_visual_context, get_visual_prompt_suffix
@@ -83,6 +83,13 @@ def generate_draft(
 
     channel_note = f"\nChannel context: {channel_context}" if channel_context else ""
 
+    # Number of b-roll frames. The pipeline stretches the frames to fill the
+    # voiceover, so a long script over few frames leaves each still on screen
+    # for 20s+ — roughly 4-6s per frame reads as normal pacing. Default 3
+    # keeps the original behaviour for anyone who doesn't set it.
+    n_frames = broll_frames()
+    frame_list = ", ".join(f'"prompt for frame {i + 1}"' for i in range(n_frames))
+
     prompt = f"""You are writing a {platform_label} script ({max_words} words max, ~60-90 seconds spoken).{channel_note}
 
 {script_context}
@@ -103,11 +110,12 @@ RULES:
 - Use one of the CTA OPTIONS at the end
 - Never use any of the NEVER USE phrases
 - B-roll prompts must follow the visual guidance (style, mood, preferred subjects)
+- Return exactly {n_frames} b-roll prompts, each a distinct shot that advances the script
 
 Output JSON exactly:
 {{
   "script": "...",
-  "broll_prompts": ["prompt for frame 1", "prompt for frame 2", "prompt for frame 3"],
+  "broll_prompts": [{frame_list}],
   "youtube_title": "...",
   "youtube_description": "...",
   "youtube_tags": "tag1,tag2,tag3",
@@ -147,9 +155,14 @@ Output JSON exactly:
             draft[field] = str(draft[field])
     if "broll_prompts" in draft:
         if not isinstance(draft["broll_prompts"], list):
-            draft["broll_prompts"] = ["Cinematic landscape"] * 3
+            draft["broll_prompts"] = ["Cinematic landscape"] * n_frames
         else:
-            draft["broll_prompts"] = [str(p) for p in draft["broll_prompts"][:3]]
+            prompts = [str(p) for p in draft["broll_prompts"][:n_frames]]
+            # An LLM that returned too few would otherwise shorten the video's
+            # visual variety silently; repeat the last shot to fill the gap.
+            while prompts and len(prompts) < n_frames:
+                prompts.append(prompts[-1])
+            draft["broll_prompts"] = prompts or ["Cinematic landscape"] * n_frames
 
     # Append visual prompt suffix to b-roll prompts
     suffix = get_visual_prompt_suffix(profile)

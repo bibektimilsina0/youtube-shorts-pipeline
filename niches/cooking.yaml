@@ -1,77 +1,110 @@
+# Nepali Kitchen — Nepal-focused profile.
+#
+# Loaded by filename:  --niche cooking
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: cooking
-display_name: "Food & Cooking"
-description: "For channels covering recipes, food trends, restaurant culture, and cooking tips."
+display_name: "Nepali Kitchen"
+description: "Nepali and Newari cooking — dal bhat, momo, sel roti, gundruk, regional and festival food."
+
 script:
-  tone: "warm, sensory, inviting, makes you hungry"
-  pacing: "relaxed but purposeful, let descriptions land"
-  perspective: "friend sharing a discovery"
-  word_count: "140 to 160"
+  tone: "warm, unhurried, like a family member showing you how it's done"
+  pacing: "brisk"
+  perspective: "second person, cooking alongside the viewer"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short instruction sentences; name the Nepali ingredient, then explain it"
+
   hooks:
-    - id: discovery
-      template: "I found the best {dish} recipe and it takes 10 minutes."
-      when: "quick recipe or hack"
-    - id: viral_trend
-      template: "This {food_trend} is taking over the internet. I tried it."
-      when: "viral food trend"
-    - id: secret
-      template: "Restaurant chefs don't want you to know this one trick."
-      when: "professional cooking technique made accessible"
-    - id: challenge
-      template: "I tried making {dish} from scratch. Here's what happened."
-      when: "cooking challenge or experiment"
-  cta_variants:
-    - "Follow for daily recipe ideas."
-    - "Save this recipe for later."
-    - "Would you try this? Comment below."
-  forbidden_phrases:
-    - "yummy"
-    - "to die for"
-    - "foodie"
+    - id: family_recipe
+      template: "This is how Nepali grandmothers actually make {topic}."
+      when: "traditional dish"
+    - id: mistake
+      template: "Most people ruin {topic} at one step. Here it is."
+      when: "common technique error"
+    - id: regional
+      template: "In the hills they make {topic} completely differently."
+      when: "regional variation"
+    - id: festival
+      template: "{topic} only appears on Nepali tables once a year."
+      when: "festival food"
+
   structure:
-    opening: "Start with the finished dish or a sensory hook. Make them hungry."
-    middle: "Quick story or context, then the key insight or technique."
-    closing: "What makes this special. CTA."
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
+  cta_variants:
+    - "Follow for Nepali recipes."
+    - "Comment how your family makes this."
+    - "Which dish should we cook next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    - "calling Nepali food 'Indian'"
+    - "claims a dish is 'authentic' without regional context"
+
 visuals:
-  style: "warm lighting, close up textures, steam and movement, food photography"
-  mood: "warm, appetizing, cozy, rustic"
-  color_palette: ["#2C1810", "#D4A574", "#FF6B35", "#F5E6CC", "#8B4513"]
+  style: "warm macro food photography, Nepali kitchen, natural window light"
+  prompt_suffix: "photorealistic, macro food photography, warm natural light, Nepal, high detail, no text, no watermark"
   subjects:
     prefer:
-      - "close up of food with steam rising"
-      - "ingredients arranged beautifully"
-      - "hands cooking in warm kitchen light"
-      - "finished dish overhead shot"
+      - "dal bhat thali on a brass plate"
+      - "momo being folded by hand"
+      - "sel roti frying in ghee"
+      - "gundruk and fermented greens"
+      - "stone mortar with Himalayan spices"
+      - "clay chulo and copper pots"
     avoid:
-      - "fast food"
-      - "processed ingredients"
-      - "empty plates"
-  prompt_suffix: "food photography, warm natural lighting, appetizing, shallow depth of field, rustic"
+      - "Western plating"
+      - "cartoon or illustrated food"
+      - "identifiable real people"
+      - "restaurant branding"
+
 voice:
-  pace: "relaxed, approximately 140 words per minute"
-  energy: "warm, enthusiastic but not loud"
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-JennyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 60
-        similarity: 85
-        speed: 0.95
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FF6B35"
-  words_per_group: 4
+  highlight_color: "#E2673A"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "acoustic, warm, light jazz, cozy, no lyrics"
-  energy: "low to medium"
-  tags: ["acoustic", "jazz", "warm", "cozy"]
+  mood: "subtle, unobtrusive"
+  energy: "medium"
   duck_volume_speech: 0.10
-  duck_volume_gap: 0.20
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "close up food shot, warm colors, minimal text"
-  accent_color: "#FF6B35"
-  max_words: 3
+  style: "high contrast, one dominant subject, minimal text"
+  max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["food", "recipes", "cooking", "MealPrepSunday"]
+    subreddits: ["Nepal", "nepalifood", "IndianFood"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

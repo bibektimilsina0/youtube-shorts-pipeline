@@ -1,52 +1,111 @@
+# Nepali Screen & Music — Nepal-focused profile.
+#
+# Loaded by filename:  --niche entertainment
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: entertainment
-display_name: "Entertainment"
-description: "Profile for entertainment content."
+display_name: "Nepali Screen & Music"
+description: "Nepali cinema, music, streaming and the creators behind them."
+
 script:
-  tone: "engaging, clear, conversational"
-  pacing: "moderate"
-  word_count: "150 to 175"
+  tone: "enthusiastic but critical; treat Nepali work as worth serious attention"
+  pacing: "brisk"
+  perspective: "second person, talking to a Nepali viewer or listener"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short sentences; name the work, then the reason it matters"
+
   hooks:
-    - id: breaking
-      template: "This just happened in the world of entertainment."
-      when: "recent event"
-    - id: explainer
-      template: "Let me break down {topic} in 60 seconds."
-      when: "complex topic"
+    - id: finally
+      template: "Nepali cinema finally did {topic}."
+      when: "a genuine first or milestone"
+    - id: underrated
+      template: "{topic} deserved far more attention than it got."
+      when: "overlooked work"
+    - id: why_now
+      template: "Why is every Nepali artist suddenly doing {topic}?"
+      when: "emerging trend"
+    - id: comparison
+      template: "{topic} vs what Bollywood does. The difference matters."
+      when: "contrast with regional industry"
+
+  structure:
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
   cta_variants:
-    - "Follow for more."
-    - "What do you think? Comment below."
+    - "Follow for Nepali screen and music."
+    - "Comment what you're watching."
+    - "What should we cover next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
   forbidden_phrases:
     - "like and subscribe"
     - "smash that bell"
-  structure:
-    opening: "Hook in first 3 seconds."
-    middle: "3 key points."
-    closing: "Takeaway and CTA."
+    - "spoilers without warning"
+    - "personal attacks on named artists"
+    - "unverified gossip about real people"
+    - "body or appearance commentary"
+
 visuals:
-  style: "cinematic, professional"
-  prompt_suffix: "photorealistic, cinematic lighting, high quality"
+  style: "cinematic documentary photography, warm Nepali interiors and streets"
+  prompt_suffix: "photorealistic, cinematic natural light, Nepal, high detail, no text, no watermark"
+  subjects:
+    prefer:
+      - "Nepali cinema hall exterior"
+      - "madal and sarangi close-up"
+      - "street musicians in Kathmandu"
+      - "recording studio in Nepal"
+      - "film set lighting rig"
+    avoid:
+      - "identifiable real celebrities"
+      - "film posters or studio logos"
+      - "paparazzi-style imagery"
+      - "on-screen text baked into the visual"
+
 voice:
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 35
-        similarity: 80
-        speed: 1.05
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FFFF00"
-  words_per_group: 4
+  highlight_color: "#EC407A"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "ambient, subtle"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.25
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "bold text, high contrast"
+  style: "high contrast, one dominant subject, minimal text"
   max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["entertainment"]
+    subreddits: ["Nepal", "NepaliMusic", "bollywood"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"

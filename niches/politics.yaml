@@ -1,52 +1,115 @@
+# Nepal Civics Explained — Nepal-focused profile.
+#
+# Loaded by filename:  --niche politics
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
 name: politics
-display_name: "Politics"
-description: "Profile for politics content."
+display_name: "Nepal Civics Explained"
+description: "How Nepali government, federalism, elections and policy actually work — institutions, not personalities."
+
 script:
-  tone: "engaging, clear, conversational"
-  pacing: "moderate"
-  word_count: "150 to 175"
+  tone: "neutral and explanatory; describe systems, never advocate"
+  pacing: "brisk"
+  perspective: "second person, explaining to a Nepali citizen"
+  # ~2.5 words/sec spoken, so 100-200 words is roughly 40-80 seconds.
+  # Pair with BROLL_FRAMES=10 to keep about 4-6s per still.
+  word_count: "100 to 200"
+  sentence_style: "short sentences; define the institution before discussing it"
+
   hooks:
-    - id: breaking
-      template: "This just happened in the world of politics."
-      when: "recent event"
-    - id: explainer
-      template: "Let me break down {topic} in 60 seconds."
-      when: "complex topic"
+    - id: how_it_works
+      template: "How does {topic} actually work in Nepal? Step by step."
+      when: "institution or process"
+    - id: federalism
+      template: "Nepal has three tiers of government. {topic} shows why that's complicated."
+      when: "federal structure"
+    - id: constitution
+      template: "Nepal's constitution says something specific about {topic}."
+      when: "constitutional provision"
+    - id: why_stuck
+      template: "Why does {topic} never get resolved? The structure explains it."
+      when: "recurring institutional deadlock"
+
+  structure:
+    opening: "Hook in the first 3 seconds. No greeting, no windup."
+    middle: "Three to four beats, each advancing the last. Ground every claim in the research provided."
+    closing: "Land the point, then one CTA. Never end on an unanswered question."
+
   cta_variants:
-    - "Follow for more."
-    - "What do you think? Comment below."
+    - "Follow for Nepali civics."
+    - "Comment what you'd like explained."
+    - "Which process should we break down next?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
   forbidden_phrases:
     - "like and subscribe"
     - "smash that bell"
-  structure:
-    opening: "Hook in first 3 seconds."
-    middle: "3 key points."
-    closing: "Takeaway and CTA."
+    - "naming living politicians"
+    - "names of political party leaders"
+    - "party endorsement or criticism"
+    - "allegations of corruption against a named person"
+    - "calls to protest"
+    - "predicting election outcomes"
+    - "religious, ethnic or caste generalisations"
+
 visuals:
-  style: "cinematic, professional"
-  prompt_suffix: "photorealistic, cinematic lighting, high quality"
+  style: "neutral documentary photography, institutional architecture, overcast daylight"
+  prompt_suffix: "photorealistic, natural light, Nepal, documentary style, high detail, no text, no watermark"
+  subjects:
+    prefer:
+      - "Singha Durbar and government building exteriors"
+      - "ballot box and election materials"
+      - "municipal office queues"
+      - "the constitution as a printed document"
+      - "federal map of Nepal's provinces"
+    avoid:
+      - "identifiable real politicians"
+      - "party flags, logos or symbols"
+      - "protest or riot imagery"
+      - "religious iconography"
+      - "national flag as an emotive device"
+
 voice:
+  pace: "brisk"
+  energy: "medium"
+  style: "conversational, documentary"
   suggested_voices:
     edge_tts:
-      en: "en-US-GuyNeural"
-    "60db":
-      voice_id: "fbb75ed2-975a-40c7-9e06-38e30524a9a1"
-      settings:
-        stability: 70
-        similarity: 85
-        speed: 0.95
-        enhance: true
+      # Indian English reads closest to a Nepali audience; the CLI's
+      # --lang does not accept "ne", so a ne-NP voice is unreachable.
+      # Female alternative: en-IN-NeerjaNeural
+      en: "en-IN-PrabhatNeural"
+      hi: "hi-IN-MadhurNeural"
+
 captions:
-  highlight_color: "#FFFF00"
-  words_per_group: 4
+  highlight_color: "#546E7A"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
 music:
-  mood: "ambient, subtle"
+  mood: "subtle, unobtrusive"
   energy: "medium"
-  duck_volume_speech: 0.12
-  duck_volume_gap: 0.25
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
 thumbnail:
-  style: "bold text, high contrast"
+  style: "high contrast, one dominant subject, minimal text"
   max_words: 5
+
 discovery:
   reddit:
-    subreddits: ["politics"]
+    subreddits: ["Nepal", "NepalSocial", "geopolitics"]
+  rss:
+    feeds:
+      - "https://kathmandupost.com/rss"
+      - "https://myrepublica.nagariknetwork.com/rss"
+      - "https://english.onlinekhabar.com/feed"
+  google_trends:
+    geo: "NP"
