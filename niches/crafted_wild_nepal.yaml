@@ -1,0 +1,108 @@
+# Nepal wildlife & mythology twig-and-bark stop-motion art.
+#
+# Loaded by filename:  --niche crafted_wild_nepal
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
+name: crafted_wild_nepal
+display_name: "Crafted Wild Nepal"
+description: "AI-generated stop-motion videos of Nepal's rare wildlife and mythological creatures, sculpted entirely from twigs, bark, moss and leaves, with ASMR sound and Nepali narration. Meditative craft aesthetic paired with conservation and cultural-pride messaging."
+
+script:
+  tone: "warm, wonder-driven, meditative; proud but not preachy"
+  pacing: "slow build, punchy finish"
+  perspective: "second person — invite the viewer to watch something being made, like showing a friend a discovery"
+  word_count: "40 to 70"
+  sentence_style: "short, declarative; one fact, one hook question; no long explanations"
+
+  hooks:
+    - id: rarity_shock
+      template: "This animal exists in only one place on Earth — right here in Nepal."
+      when: "endemic or critically endangered species"
+    - id: curiosity_question
+      template: "Do you know why {topic} looks the way it does?"
+      when: "species with a distinctive visible trait"
+    - id: disbelief
+      template: "You won't believe this is made only from twigs and bark."
+      when: "any episode — default hook"
+
+  structure:
+    opening: "Reveal the finished sculpture first, 1-2 seconds, before showing the build. Hook line lands immediately after."
+    middle: "Quick-cut build montage. One fact about the species' habitat, rarity or behavior in Nepal. Optional pattern-interrupt beat (a piece slips, is calmly repositioned) on featured/finale episodes only — not every day."
+    closing: "Hold on the completed sculpture. Ask a simple comment-inviting question. Never state a moral or conservation lecture outright — let the craftsmanship carry the message."
+
+  cta_variants:
+    - "Follow for the next animal."
+    - "Which animal should we build next? Comment below."
+    - "Have you ever seen this animal in real life?"
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    # Don't claim the sculptures are physically real handmade objects
+    - "claims of being real handmade/physical craft"
+    - "hiding or denying AI generation if directly asked"
+    # Keep it species-accurate, not fear-mongering
+    - "exaggerated danger or attack claims about wildlife"
+    - "graphic poaching or violence imagery"
+    - "unverified conservation statistics"
+
+visuals:
+  style: "photorealistic macro craft photography, clean studio lighting, natural wood and bark texture"
+  prompt_suffix: "stop-motion, twigs and bark, moss, dried leaves, macro close-up, plain white background, photorealistic, high detail, no text, no watermark, vertical 9:16"
+  subjects:
+    prefer:
+      - "Nepal's endemic, rare or endangered wildlife"
+      - "Nepal's national and iconic birds"
+      - "Himalayan and Terai habitats as background context"
+      - "hands assembling natural materials"
+      - "Nepali mythological figures (Yeti, Naga, Garuda) in the same craft style"
+    avoid:
+      - "green screen or artificial backgrounds"
+      - "cartoon or painterly rendering"
+      - "real identifiable people"
+      - "graphic depictions of animal harm"
+      - "on-screen text baked into the visual (add captions separately)"
+
+voice:
+  pace: "measured, meditative during build; brisk during hook/close"
+  energy: "low-medium"
+  style: "warm, curious, documentary-narrator"
+  suggested_voices:
+    edge_tts:
+      # English narration. The CLI's --lang only accepts
+      # en/hi/es/pt/de/fr/ja/ko, so a "ne" entry here would be
+      # unreachable; Indian-English reads closest to the region.
+      # Male alternative: en-IN-PrabhatNeural
+      en: "en-IN-NeerjaNeural"
+
+captions:
+  highlight_color: "#D9A441"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 72
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
+music:
+  mood: "meditative, gentle, wonder-filled"
+  energy: "low"
+  duck_volume_speech: 0.08
+  duck_volume_gap: 0.20
+
+thumbnail:
+  style: "close-up finished sculpture, high detail, minimal text"
+  max_words: 4
+
+discovery:
+  reddit:
+    subreddits: ["Nepal", "wildlifephotography", "natureismetal"]
+  rss:
+    - "https://kathmandupost.com/rss"
+    - "https://myrepublica.nagariknetwork.com/rss"
+    - "https://english.onlinekhabar.com/feed"
+  google_trends_geo: "NP"

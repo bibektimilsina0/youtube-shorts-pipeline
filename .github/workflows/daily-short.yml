@@ -1,0 +1,157 @@
+name: Daily Short
+
+on:
+  schedule:
+    # 03:30 UTC = 09:15 Nepal time (UTC+5:45)
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic (leave blank to auto-discover)"
+        required: false
+      niche:
+        description: "Niche profile"
+        required: false
+        default: crafted_wild_nepal
+        type: choice
+        options:
+          - crafted_wild_nepal
+          - nepali_satire
+      privacy:
+        description: "YouTube visibility"
+        required: false
+        default: unlisted
+        type: choice
+        options:
+          - unlisted
+          - private
+          - public
+
+# Needed to commit the advanced topic-list position back to the repo.
+permissions:
+  contents: write
+
+# One run at a time: two concurrent runs would upload two videos the same day.
+concurrency:
+  group: daily-short
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        # libass ships with Ubuntu's ffmpeg; without it caption burn-in is
+        # silently skipped (see verticals/captions.py:_has_ass_filter).
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          ffmpeg -filters | grep -q " ass " || { echo "::error::ffmpeg has no ass filter"; exit 1; }
+
+      - name: Cache pip wheels
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-py312-${{ hashFiles('requirements.txt') }}
+          restore-keys: pip-${{ runner.os }}-py312-
+
+      - name: Install Python dependencies
+        # CPU-only torch: the default wheel drags in ~2.5GB of CUDA libraries
+        # that a GitHub runner can never use. Whisper only needs the CPU build.
+        run: |
+          python -m pip install --upgrade pip
+          pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+
+      - name: Cache Whisper model
+        # base.pt is ~145MB; re-downloading it every run wastes minutes.
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/whisper
+          key: whisper-base-v1
+
+      - name: Restore YouTube OAuth token
+        env:
+          YOUTUBE_TOKEN_B64: ${{ secrets.YOUTUBE_TOKEN_B64 }}
+        run: |
+          if [ -z "$YOUTUBE_TOKEN_B64" ]; then
+            echo "::error::YOUTUBE_TOKEN_B64 secret is not set"
+            exit 1
+          fi
+          mkdir -p ~/.verticals && chmod 700 ~/.verticals
+          printf '%s' "$YOUTUBE_TOKEN_B64" | base64 -d > ~/.verticals/youtube_token.json
+          chmod 600 ~/.verticals/youtube_token.json
+          python -c "import json,sys; d=json.load(open('$HOME/.verticals/youtube_token.json')); sys.exit(0 if d.get('refresh_token') else 'token has no refresh_token')"
+
+      - name: Pick today's topic
+        id: topic
+        env:
+          INPUT_TOPIC: ${{ inputs.topic }}
+          NICHE: ${{ inputs.niche || 'crafted_wild_nepal' }}
+        run: |
+          # Precedence: an explicit workflow_dispatch topic, then the niche's
+          # rotating list, then --discover (trending sources).
+          if [ -n "$INPUT_TOPIC" ]; then
+            echo "topic=$INPUT_TOPIC" >> "$GITHUB_OUTPUT"
+            echo "source=manual" >> "$GITHUB_OUTPUT"
+          elif TOPIC=$(python scripts/next_topic.py "$NICHE"); then
+            echo "topic=$TOPIC" >> "$GITHUB_OUTPUT"
+            echo "source=rotation" >> "$GITHUB_OUTPUT"
+          else
+            echo "topic=" >> "$GITHUB_OUTPUT"
+            echo "source=discover" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate and upload Short
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # Free, keyless image generation. Set to "gemini" only with billing
+          # enabled — a free-tier key returns 429 on every image model.
+          IMAGE_PROVIDER: ${{ vars.IMAGE_PROVIDER || 'pollinations' }}
+          GEMINI_TEXT_MODEL: ${{ vars.GEMINI_TEXT_MODEL || 'gemini-3.6-flash' }}
+          GEMINI_IMAGE_MODEL: ${{ vars.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image' }}
+          YT_PRIVACY: ${{ inputs.privacy || 'unlisted' }}
+          NICHE: ${{ inputs.niche || 'crafted_wild_nepal' }}
+          TOPIC: ${{ steps.topic.outputs.topic }}
+        run: |
+          echo "Topic source: ${{ steps.topic.outputs.source }}"
+          if [ -n "$TOPIC" ]; then
+            echo "Topic: $TOPIC"
+            python -m verticals run --topic "$TOPIC" --niche "$NICHE" \
+              --provider gemini --voice edge --platform shorts
+          else
+            python -m verticals run --discover --auto-pick --niche "$NICHE" \
+              --provider gemini --voice edge --platform shorts
+          fi
+
+      - name: Advance topic rotation
+        # Only on success: a failed run should retry the same topic tomorrow
+        # rather than silently skipping it.
+        if: success() && steps.topic.outputs.source == 'rotation'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add topics/.state
+          git diff --quiet --cached || {
+            git commit -m "chore: advance ${{ inputs.niche || 'crafted_wild_nepal' }} topic rotation [skip ci]"
+            git push
+          }
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-${{ github.run_number }}
+          path: |
+            ~/.verticals/media/*.mp4
+            ~/.verticals/media/thumb_*.png
+            ~/.verticals/drafts/*.json
+          retention-days: 7
+          if-no-files-found: warn

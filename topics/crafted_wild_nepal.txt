@@ -1,0 +1,52 @@
+# Rotating topic list for --niche crafted_wild_nepal
+#
+# One topic per line. Blank lines and #-comments are ignored.
+# scripts/next_topic.py walks this list in order and records the position in
+# topics/.state/<niche>.pos, so the daily cron never repeats until it wraps.
+#
+# Trending-news discovery is a poor fit for this niche: the content is
+# "here is a sculpture of an animal", which has nothing to do with today's
+# headlines. A curated list gives even coverage of Nepal's wildlife instead.
+
+# ── Endemic / iconic mammals ──────────────────────────────────────
+Red panda in Nepal's eastern hills
+Snow leopard of the high Himalaya
+One-horned rhinoceros of Chitwan
+Bengal tiger in the Terai grasslands
+Himalayan musk deer
+Clouded leopard of Nepal's mid-hills
+Gaur, the Indian bison of Nepal's lowlands
+Himalayan black bear
+Wild water buffalo of Koshi Tappu
+Four-horned antelope of the Terai
+Himalayan tahr on the cliffs
+Pallas's cat of the Nepali high steppe
+Golden jackal of the Kathmandu fringe
+Ganges river dolphin in Nepal's rivers
+Indian pangolin, the scaled digger
+
+# ── Birds ─────────────────────────────────────────────────────────
+Himalayan monal, Nepal's national bird
+Spiny babbler, found only in Nepal
+Sarus crane of the Lumbini wetlands
+Bearded vulture of the high passes
+Great hornbill of the Terai forests
+Cheer pheasant of the western hills
+Ibisbill of the Himalayan riverbeds
+Satyr tragopan, the crimson horned pheasant
+White-rumped vulture of Nepal
+Danphe in winter plumage
+
+# ── Reptiles, fish, invertebrates ─────────────────────────────────
+Gharial crocodile of the Narayani
+Golden mahseer, the Himalayan river fish
+King cobra of the Terai
+Himalayan pit viper
+Golden birdwing, Nepal's largest butterfly
+
+# ── Mythological creatures, same craft style ──────────────────────
+The Yeti of Himalayan legend
+Naga, the serpent guardian of Nepali myth
+Garuda, the divine bird of Nepali temples
+Kichkandi of Nepali folklore
+The snow lion of Himalayan iconography

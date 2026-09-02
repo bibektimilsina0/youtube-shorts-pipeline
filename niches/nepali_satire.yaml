@@ -1,0 +1,115 @@
+# Nepali current-affairs satire.
+#
+# Loaded by filename:  --niche nepali_satire
+# Every field below is one the loader actually reads (verticals/niche.py);
+# unknown keys are ignored silently, so don't invent new ones.
+
+name: nepali_satire
+display_name: "Nepali Current Affairs Satire"
+description: "Comedic commentary on Nepali current affairs. Punches at systems, never at named individuals."
+
+script:
+  tone: "dry, deadpan, wry; amused rather than angry"
+  pacing: "brisk"
+  perspective: "second person — talk to the viewer as a fellow citizen who already knows the absurdity"
+  word_count: "150 to 175"
+  sentence_style: "short declaratives; land the joke, then move on; no rambling setups"
+
+  hooks:
+    - id: absurd_premise
+      template: "Nepal just did something that shouldn't be possible."
+      when: "recent event"
+    - id: rhetorical
+      template: "Ever wonder why {topic} never gets fixed?"
+      when: "recurring problem"
+    - id: deadpan_stat
+      template: "Here's a number that explains {topic} better than any speech."
+      when: "data available"
+
+  structure:
+    opening: "Hook in the first 3 seconds. State the absurdity flatly, no windup."
+    middle: "Three beats. Each names the system, the excuse and the consequence. Escalate the absurdity."
+    closing: "Land on the irony. Let the viewer draw the conclusion — never state the moral."
+
+  cta_variants:
+    - "Follow for more."
+    - "What do you think? Comment below."
+    - "Tell me I'm wrong."
+
+  # ── Editorial guardrails ──────────────────────────────────────────
+  # These reach the LLM as hard "do not use" instructions.
+  # Satire of institutions is defensible; naming a living individual
+  # invites a defamation claim and a platform strike.
+  forbidden_phrases:
+    - "like and subscribe"
+    - "smash that bell"
+    # No named individuals — criticise the office, party or system instead
+    - "names of living politicians"
+    - "names of specific government officials"
+    - "names of political party leaders"
+    # No claims of criminality about real people
+    - "allegations of corruption against a named person"
+    # Keep it satire, not agitation
+    - "calls to protest"
+    - "calls for violence"
+    - "religious or ethnic generalisations"
+    - "caste-based generalisations"
+
+visuals:
+  style: "documentary photography, warm Kathmandu daylight, slightly wry framing"
+  prompt_suffix: "photorealistic, natural light, documentary style, Nepal, high quality, no text, no watermark"
+  subjects:
+    prefer:
+      - "Kathmandu streetscapes"
+      - "traffic and dust"
+      - "government office queues and paperwork"
+      - "load-shedding candles and inverters"
+      - "hills, terraces and rural roads"
+      - "everyday people at work"
+    avoid:
+      - "identifiable faces of real public figures"
+      - "political party flags, logos or symbols"
+      - "religious iconography"
+      - "national flags"
+      - "protest and riot imagery"
+      - "on-screen text or captions"
+
+voice:
+  pace: "brisk"
+  energy: "medium"
+  style: "deadpan, conversational"
+  suggested_voices:
+    # Neutral English male; swap to an en-IN voice for a closer regional accent
+    # (see:  .venv/bin/python -m edge_tts --list-voices | grep en-IN)
+    edge_tts:
+      en: "en-US-GuyNeural"
+      hi: "hi-IN-MadhurNeural"
+
+captions:
+  highlight_color: "#FFD400"
+  text_color: "#FFFFFF"
+  words_per_group: 3
+  font_family: "DejaVu Sans"
+  font_size: 76
+  font_weight: "bold"
+  position: "lower_third"
+  background: "semi_transparent_dark"
+
+music:
+  mood: "playful, ironic, light"
+  energy: "medium"
+  duck_volume_speech: 0.10
+  duck_volume_gap: 0.22
+
+thumbnail:
+  style: "bold text, high contrast, deadpan"
+  max_words: 5
+
+discovery:
+  reddit:
+    subreddits: ["Nepal", "NepalSocial"]
+  rss:
+    - "https://kathmandupost.com/rss"
+    - "https://myrepublica.nagariknetwork.com/rss"
+    - "https://english.onlinekhabar.com/feed"
+  google_trends_geo: "NP"
