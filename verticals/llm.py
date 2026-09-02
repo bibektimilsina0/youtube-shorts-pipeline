@@ -7,6 +7,8 @@ Provider selection: --provider flag or LLM_PROVIDER env var or config.json.
 
 import json
 import os
+import time
+import re
 
 from .config import (
     get_anthropic_client,
@@ -151,6 +153,28 @@ def _call_minimax(prompt: str, max_tokens: int) -> str:
     return data["choices"][0]["message"]["content"].strip()
 
 
+# Free-tier 429s carry a retry delay; cap how long we are willing to honour
+# so a long window fails fast instead of hanging a CI job.
+GEMINI_MAX_BACKOFF = 90.0
+
+
+def _retry_after_seconds(resp) -> float:
+    """Seconds to wait from a 429, per Retry-After or the message text."""
+    ra = resp.headers.get("Retry-After")
+    if ra:
+        try:
+            return float(ra)
+        except ValueError:
+            pass
+    try:
+        msg = resp.json().get("error", {}).get("message", "")
+    except Exception:
+        return 0.0
+    m = re.search(r"retry in ([0-9.]+)s", msg)
+    return float(m.group(1)) if m else 0.0
+
+
+
 def _call_gemini(prompt: str, max_tokens: int) -> str:
     """Call Gemini via Google AI API."""
     import requests
@@ -196,7 +220,28 @@ def _call_gemini(prompt: str, max_tokens: int) -> str:
                 "an AI Studio key (https://aistudio.google.com/apikey), not a "
                 "Vertex AI / service-account credential"
             )
-        raise RuntimeError(f"Gemini API {r.status_code}: {r.text[:300]}{hint}")
+        elif r.status_code == 429:
+            # Free-tier limits are per-model, and the response says how long
+            # to wait. with_retry's fixed backoff (3s/6s) is usually shorter
+            # than that, so honour the server's own retry delay instead of
+            # burning all three attempts inside the window.
+            delay = _retry_after_seconds(r)
+            if delay and delay <= GEMINI_MAX_BACKOFF:
+                log(f"Gemini rate-limited; waiting {delay:.0f}s as instructed")
+                time.sleep(delay + 1)
+                r = requests.post(
+                    url, json=body, timeout=timeout,
+                    headers={"Content-Type": "application/json",
+                             "x-goog-api-key": api_key},
+                )
+            if r.status_code == 429:
+                hint = (
+                    f" — free-tier quota for this model is exhausted. Try a "
+                    f"different model (GEMINI_TEXT_MODEL=gemini-3.5-flash or "
+                    f"gemini-2.5-flash), or wait for the window to reset."
+                )
+        if r.status_code != 200:
+            raise RuntimeError(f"Gemini API {r.status_code}: {r.text[:300]}{hint}")
 
     data = r.json()
     parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])

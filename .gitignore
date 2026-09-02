@@ -8,6 +8,9 @@ youtube_token.json
 .env
 .env.*
 
+# Background music — audio files stay local (see music/README.md)
+music/*.mp3
+
 # Generated pipeline output
 drafts/
 media/

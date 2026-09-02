@@ -15,7 +15,6 @@
 # 90 entries = one full pass per quarter at one video per day.
 
 # ── Big cats and canids ───────────────────────────────────────────
-Snow leopard of the high Himalaya
 Bengal tiger in the Terai grasslands
 Clouded leopard of Nepal's mid-hills
 Common leopard of the Kathmandu valley rim
