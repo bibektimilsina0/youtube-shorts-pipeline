@@ -6,7 +6,6 @@ youtube_token.json
 
 # Environment files
 .env
-.env.*
 
 # Background music — audio files stay local (see music/README.md)
 music/*.mp3
